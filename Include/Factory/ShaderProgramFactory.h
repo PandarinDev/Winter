@@ -21,9 +21,9 @@ namespace winter {
 			"#version 330 core\n"
 			"uniform mat4 u_ProjectionMatrix;\n"
 			"uniform mat4 u_ModelViewMatrix;\n"
-			"layout (location = 0) in vec2 in_Position;\n"
+			"layout (location = 0) in vec3 in_Position;\n"
 			"void main() {\n"
-			"gl_Position = u_ProjectionMatrix * u_ModelViewMatrix * vec4(in_Position, 0.0, 1.0);\n"
+			"gl_Position = u_ProjectionMatrix * u_ModelViewMatrix * vec4(in_Position, 1.0);\n"
 			"}\n";
 		static constexpr const char* defaultFS = ""
 			"#version 330 core\n"

@@ -1,7 +1,7 @@
 #include "Graphics/Renderer.h"
 #include "Utility/OGLUtils.h"
+#include "External/glad.h"
 
-#include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <string>
@@ -15,9 +15,12 @@ namespace winter {
 	Renderer::Renderer(
 		const glm::vec3& clearColor,
 		std::unique_ptr<ShaderProgram> shader,
+		float fieldOfView,
 		float perspectiveWidth,
-		float perspectiveHeight) :
-			projectionMatrix(glm::ortho(0.0f, perspectiveWidth, 0.0f, perspectiveHeight)),
+		float perspectiveHeight,
+		float perspectiveNear,
+		float perspectiveFar) :
+			projectionMatrix(glm::perspective(fieldOfView, perspectiveWidth / perspectiveHeight, perspectiveNear, perspectiveFar)),
 			modelViewMatrix(glm::mat4(1.0f)),
 			rendering(false) {
 		configureDefaults();
@@ -27,7 +30,7 @@ namespace winter {
 	}
 
 	void Renderer::clearBuffers() const {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void Renderer::beginFrame() {
@@ -41,11 +44,12 @@ namespace winter {
 
 	void Renderer::finishFrame() {
 		rendering = false;
+		modelViewMatrix = camera.calculateTransformationMatrix();
 		shader->uploadMatrix(projectionMatrixLocation, projectionMatrix);
 		shader->uploadMatrix(modelViewMatrixLocation, modelViewMatrix);
 		glNamedBufferData(vbo, geometryBuffer.size() * sizeof(float), geometryBuffer.data(), GL_STREAM_DRAW);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, geometryBuffer.size() / 2);
+		glDrawArrays(GL_TRIANGLES, 0, geometryBuffer.size() / 3);
 		checkForErrors();
 	}
 
@@ -65,6 +69,8 @@ namespace winter {
 	}
 
 	void Renderer::configureDefaults() const {
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -73,8 +79,8 @@ namespace winter {
 		glCreateVertexArrays(1, &vao);
 		glCreateBuffers(1, &vbo);
 		glEnableVertexArrayAttrib(vao, 0);
-		glVertexArrayAttribFormat(vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-		glVertexArrayVertexBuffer(vao, 0, vbo, 0, 2 * sizeof(float));
+		glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+		glVertexArrayVertexBuffer(vao, 0, vbo, 0, 3 * sizeof(float));
 	}
 
 	void Renderer::checkForErrors() const {

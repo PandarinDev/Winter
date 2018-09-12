@@ -1,6 +1,7 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "External/glad.h"
+
 #include <glm/mat4x4.hpp>
 
 #include <string>

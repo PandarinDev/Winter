@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Graphics/Camera.h"
 #include "Graphics/ShaderProgram.h"
 #include "Graphics/Geometry.h"
 
@@ -17,8 +18,11 @@ namespace winter {
 		Renderer(
 			const glm::vec3& clearColor,
 			std::unique_ptr<ShaderProgram> shader,
+			float fieldOfView,
 			float perspectiveWidth,
-			float perspectiveHeight);
+			float perspectiveHeight,
+			float perspectiveNear,
+			float perspectiveFar);
 
 		void clearBuffers() const;
 		void beginFrame();
@@ -35,6 +39,7 @@ namespace winter {
 		static constexpr const char* PROJECTION_MATRIX_UNIFORM = "u_ProjectionMatrix";
 		static constexpr const char* MODELVIEW_MATRIX_UNIFORM = "u_ModelViewMatrix";
 
+		Camera camera;
 		glm::mat4 projectionMatrix;
 		glm::mat4 modelViewMatrix;
 		GLuint vao;

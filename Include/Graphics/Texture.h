@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "External/glad.h"
 
 namespace winter {
 
