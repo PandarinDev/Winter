@@ -38,6 +38,10 @@ namespace winter {
 		return glfwWindowShouldClose(handle);
 	}
 
+	void Window::setKeyCallback(GLFWkeyfun callback) const {
+		glfwSetKeyCallback(handle, callback);
+	}
+
 	const std::string& Window::getTitle() const {
 		return title;
 	}

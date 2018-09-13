@@ -2,7 +2,7 @@
 
 #include "Graphics/Camera.h"
 #include "Graphics/ShaderProgram.h"
-#include "Graphics/Geometry.h"
+#include "Graphics/Mesh.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -25,10 +25,9 @@ namespace winter {
 			float perspectiveFar);
 
 		void clearBuffers() const;
-		void beginFrame();
-		void render(const Geometry& geometry);
-		void finishFrame();
+		void render(const Mesh& mesh) const;
 
+		Camera& getCamera();
 		const ShaderProgram& getShaderProgram() const;
 
 		void setClearColor(const glm::vec3& clearColor);
@@ -42,17 +41,12 @@ namespace winter {
 		Camera camera;
 		glm::mat4 projectionMatrix;
 		glm::mat4 modelViewMatrix;
-		GLuint vao;
-		GLuint vbo;
-		bool rendering;
 		glm::vec3 clearColor;
 		std::unique_ptr<ShaderProgram> shader;
 		GLint projectionMatrixLocation;
 		GLint modelViewMatrixLocation;
-		Geometry geometryBuffer;
 
 		void configureDefaults() const;
-		void setupBuffers();
 		void checkForErrors() const;
 
 	};

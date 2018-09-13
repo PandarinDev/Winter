@@ -6,7 +6,7 @@
 namespace winter {
 	
 	std::unique_ptr<Shader> ShaderFactory::createFromSource(ShaderType type, const std::string& source) {
-		GLuint handle = glCreateShader(TypeUtils::enum_value(type));
+		GLuint handle = glCreateShader(TypeUtils::enumValue(type));
 		const char* source_ptr = source.c_str();
 		glShaderSource(handle, 1, &source_ptr, nullptr);
 		glCompileShader(handle);

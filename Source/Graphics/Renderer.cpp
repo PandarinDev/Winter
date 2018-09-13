@@ -21,10 +21,8 @@ namespace winter {
 		float perspectiveNear,
 		float perspectiveFar) :
 			projectionMatrix(glm::perspective(fieldOfView, perspectiveWidth / perspectiveHeight, perspectiveNear, perspectiveFar)),
-			modelViewMatrix(glm::mat4(1.0f)),
-			rendering(false) {
+			modelViewMatrix(glm::mat4(1.0f)) {
 		configureDefaults();
-		setupBuffers();
 		setClearColor(clearColor);
 		setShaderProgram(std::move(shader));
 	}
@@ -33,24 +31,17 @@ namespace winter {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void Renderer::beginFrame() {
-		rendering = true;
-		geometryBuffer.clear();
-	}
-
-	void Renderer::render(const Geometry& geometry) {
-		geometryBuffer.insert(geometryBuffer.end(), geometry.begin(), geometry.end());
-	}
-
-	void Renderer::finishFrame() {
-		rendering = false;
-		modelViewMatrix = camera.calculateTransformationMatrix();
+	void Renderer::render(const Mesh& mesh) const {
+		glBindVertexArray(mesh.getVertexArrayObject());
+		// modelViewMatrix = camera.calculateTransformationMatrix();
 		shader->uploadMatrix(projectionMatrixLocation, projectionMatrix);
-		shader->uploadMatrix(modelViewMatrixLocation, modelViewMatrix);
-		glNamedBufferData(vbo, geometryBuffer.size() * sizeof(float), geometryBuffer.data(), GL_STREAM_DRAW);
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, geometryBuffer.size() / 3);
+		shader->uploadMatrix(modelViewMatrixLocation, camera.calculateTransformationMatrix());
+		glDrawElements(GL_TRIANGLES, mesh.getNumberOfIndices(), GL_UNSIGNED_INT, 0);
 		checkForErrors();
+	}
+
+	Camera& Renderer::getCamera() {
+		return camera;
 	}
 
 	const ShaderProgram& Renderer::getShaderProgram() const {
@@ -73,14 +64,6 @@ namespace winter {
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	void Renderer::setupBuffers() {
-		glCreateVertexArrays(1, &vao);
-		glCreateBuffers(1, &vbo);
-		glEnableVertexArrayAttrib(vao, 0);
-		glVertexArrayAttribFormat(vao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-		glVertexArrayVertexBuffer(vao, 0, vbo, 0, 3 * sizeof(float));
 	}
 
 	void Renderer::checkForErrors() const {

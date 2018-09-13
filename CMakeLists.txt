@@ -13,5 +13,5 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules")
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 
-target_include_directories(Winter PRIVATE ${GLM_INCLUDE_DIRS})
+target_include_directories(Winter PRIVATE ${GLFW3_INCLUDE_DIR} ${GLM_INCLUDE_DIRS})
 target_link_libraries(Winter GLFW::glfw3)

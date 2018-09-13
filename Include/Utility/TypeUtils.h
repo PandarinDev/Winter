@@ -9,7 +9,7 @@ namespace winter {
 	public:
 
 		template<typename T>
-		static auto enum_value(T e) {
+		static auto enumValue(T e) {
 			return static_cast<std::underlying_type_t<T>>(e);
 		}
 
