@@ -5,8 +5,8 @@
 # - GLFW3_INCLUDE_DIR
 #
 set(GLFW3_ROOT "${GLFW3_ROOT}" CACHE PATH "Root directory of GLFW3")
-find_library(GLFW3_LIBRARY NAMES glfw3 glfw PATHS "${GLFW3_ROOT}" PATH_SUFFIXES lib)
-find_path(GLFW3_INCLUDE_DIR NAMES GLFW PATHS "${GLFW3_ROOT}" PATH_SUFFIXES include)
+find_library(GLFW3_LIBRARY NAMES glfw3 glfw HINTS "${GLFW3_ROOT}/lib")
+find_path(GLFW3_INCLUDE_DIR NAMES "GLFW/glfw3.h" HINTS "${GLFW3_ROOT}/include")
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
     glfw3

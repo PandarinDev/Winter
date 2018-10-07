@@ -1,6 +1,6 @@
 // Important: GLAD must be included before GLFW
 #include "External/glad.h"
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
 #include "Window.h"
 #include "Input/InputManager.h"
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 		ShaderProgramFactory::createDefaultProgram(),
 		glm::radians(60.0f),
 		1600.f, 900.f, 0.1f, 100.0f);
-	auto dragonPtr = MeshFactory::loadFile(MeshFormat::OBJ, "Assets/Meshes/Dragon.obj");
+	auto dragonPtr = MeshFactory::loadFile(MeshFormat::OBJ, "Assets/Meshes/DragonWithNormals.obj");
 	InputManager::getInstance().registerEventListener(KeyEvent::KEY_DOWN, [&renderer](int keyCode) {
 		glm::vec3 translation(0.0f, 0.0f, 0.0f);
 		switch (keyCode) {
