@@ -38,8 +38,20 @@ namespace winter {
 		return glfwWindowShouldClose(handle);
 	}
 
+	void Window::captureCursor() const {
+		glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
+	void Window::releaseCursor() const {
+		glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
 	void Window::setKeyCallback(GLFWkeyfun callback) const {
 		glfwSetKeyCallback(handle, callback);
+	}
+
+	void Window::setMouseCallback(GLFWcursorposfun callback) const {
+		glfwSetCursorPosCallback(handle, callback);
 	}
 
 	const std::string& Window::getTitle() const {

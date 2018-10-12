@@ -13,6 +13,8 @@ namespace winter {
 
         void translate(const glm::vec3& translation);
 
+		void setDirection(const glm::vec3& direction);
+
         const glm::vec3& getPosition() const;
         const glm::vec3& getDirection() const;
         glm::mat4 calculateTransformationMatrix() const;

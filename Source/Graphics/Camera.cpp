@@ -11,6 +11,10 @@ namespace winter {
         position += translation;
     }
 
+	void Camera::setDirection(const glm::vec3& direction) {
+		this->direction = direction;
+	}
+
     const glm::vec3& Camera::getPosition() const {
         return position;
     }

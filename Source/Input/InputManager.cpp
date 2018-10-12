@@ -10,6 +10,10 @@ namespace winter {
         return instance;
     }
 
+	const glm::vec2& InputManager::getMousePosition() const {
+		return mousePosition;
+	}
+
     void InputManager::tick() {
         static const auto keyDownValue = TypeUtils::enumValue(KeyEvent::KEY_DOWN);
         static const auto keyUpValue = TypeUtils::enumValue(KeyEvent::KEY_UP);
@@ -34,6 +38,7 @@ namespace winter {
 
     void InputManager::hookInto(const Window& window) {
         window.setKeyCallback(keyCallback);
+		window.setMouseCallback(mouseCallback);
     }
 
     void InputManager::registerEventListener(KeyEvent event, const KeyEventListener& eventListener) {
@@ -60,5 +65,11 @@ namespace winter {
             break;
         }
     }
+
+	void InputManager::mouseCallback(GLFWwindow* window, double x, double y) {
+		auto& instance = getInstance();
+		instance.mousePosition.x = static_cast<float>(x);
+		instance.mousePosition.y = static_cast<float>(y);
+	}
 
 }

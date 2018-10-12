@@ -19,7 +19,10 @@ namespace winter {
 		void pollEvents() const;
 		void swapBuffers() const;
 		bool shouldClose() const;
+		void captureCursor() const;
+		void releaseCursor() const;
 		void setKeyCallback(GLFWkeyfun callback) const;
+		void setMouseCallback(GLFWcursorposfun callback) const;
 
 		const std::string& getTitle() const;
 		int getWidth() const;

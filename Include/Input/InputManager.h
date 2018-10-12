@@ -2,6 +2,7 @@
 
 #include "Window.h"
 
+#include "glm/vec2.hpp"
 #include "GLFW/glfw3.h"
 
 #include <vector>
@@ -30,6 +31,8 @@ namespace winter {
         InputManager(const InputManager&) = delete;
         InputManager& operator=(const InputManager&) = delete;
 
+		const glm::vec2& getMousePosition() const;
+
         void tick();
         void hookInto(const Window& window);
         void registerEventListener(KeyEvent event, const KeyEventListener& eventListener);
@@ -38,11 +41,13 @@ namespace winter {
 
         InputManager() = default;
 
+		glm::vec2 mousePosition;
         std::unordered_map<KeyEventType, std::vector<KeyEventListener>> eventListeners;
         std::unordered_set<KeyType> keysDown;
         std::unordered_set<KeyType> keysUp;
 
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void mouseCallback(GLFWwindow* window, double x, double y);
 
     };
 
