@@ -33,11 +33,9 @@ namespace winter {
 
 	void Renderer::render(const Mesh& mesh) const {
 		glBindVertexArray(mesh.getVertexArrayObject());
-		// modelViewMatrix = camera.calculateTransformationMatrix();
 		shader->uploadMatrix(projectionMatrixLocation, projectionMatrix);
 		shader->uploadMatrix(modelViewMatrixLocation, camera.calculateTransformationMatrix());
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getNumberOfIndices());
-		// glDrawElements(GL_TRIANGLES, mesh.getNumberOfIndices(), GL_UNSIGNED_INT, 0);
 		checkForErrors();
 	}
 

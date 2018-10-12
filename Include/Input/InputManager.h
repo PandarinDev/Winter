@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 
 #include <vector>
+#include <memory>
 #include <functional>
 #include <type_traits>
 #include <unordered_map>
@@ -20,7 +21,18 @@ namespace winter {
 
     using KeyType = decltype(GLFW_KEY_LAST);
     using KeyEventType = std::underlying_type_t<KeyEvent>;
-    using KeyEventListener = std::function<void(KeyType)>;
+
+	struct KeyEventListener {
+		virtual ~KeyEventListener() = default;
+		virtual void handleKeyEvent(KeyType key) = 0;
+	};
+	using KeyEventListenerPtr = std::unique_ptr<KeyEventListener>;
+
+	struct MouseListener {
+		virtual ~MouseListener() = default;
+		virtual void handleMouseEvent(const glm::vec2& mousePos, const glm::vec2& lastMousePos) = 0;
+	};
+	using MouseListenerPtr = std::unique_ptr<MouseListener>;
 
     class InputManager final {
 
@@ -35,16 +47,19 @@ namespace winter {
 
         void tick();
         void hookInto(const Window& window);
-        void registerEventListener(KeyEvent event, const KeyEventListener& eventListener);
+        void registerEventListener(KeyEvent event, KeyEventListenerPtr eventListener);
+		void registerMouseListener(MouseListenerPtr mouseListener);
 
     private:
 
         InputManager() = default;
 
 		glm::vec2 mousePosition;
-        std::unordered_map<KeyEventType, std::vector<KeyEventListener>> eventListeners;
+		glm::vec2 lastMousePosition;
+        std::unordered_map<KeyEventType, std::vector<KeyEventListenerPtr>> eventListeners;
         std::unordered_set<KeyType> keysDown;
         std::unordered_set<KeyType> keysUp;
+		std::vector<MouseListenerPtr> mouseListeners;
 
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		static void mouseCallback(GLFWwindow* window, double x, double y);
