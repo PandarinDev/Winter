@@ -15,7 +15,7 @@ namespace winter {
 
 	private:
 		
-		static constexpr float CAMERA_SPEED = 0.05f;
+		static constexpr float CAMERA_SPEED = 0.1f;
 		
 		Camera& camera;
 
@@ -31,7 +31,7 @@ namespace winter {
 
 	private:
 
-		static constexpr float MOUSE_SENSITIVITY = 0.1f;
+		static constexpr float MOUSE_SENSITIVITY = 0.2f;
 
 		Camera& camera;
 

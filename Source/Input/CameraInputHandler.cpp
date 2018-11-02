@@ -40,16 +40,8 @@ namespace winter {
 	CameraMouseInputHandler::CameraMouseInputHandler(Camera& camera) : camera(camera) {}
 
 	void CameraMouseInputHandler::handleMouseEvent(const glm::vec2& mousePos, const glm::vec2& lastMousePos) {
-		glm::vec2 mouseDelta = mousePos - lastMousePos;
-		// Calculate new right vector
-		glm::vec3 cameraRight = camera.getRight();
-		cameraRight = glm::rotateY(cameraRight, -glm::radians(mouseDelta.x) * MOUSE_SENSITIVITY);
-		camera.setRight(cameraRight);
-		// Calculate new direction vector
-		glm::vec3 cameraDir = camera.getDirection();
-		cameraDir = glm::rotate(cameraDir, -glm::radians(mouseDelta.y) * MOUSE_SENSITIVITY, cameraRight);
-		cameraDir = glm::rotateY(cameraDir, -glm::radians(mouseDelta.x) * MOUSE_SENSITIVITY);
-		camera.setDirection(cameraDir);
+		glm::vec2 mouseDelta = (mousePos - lastMousePos) * MOUSE_SENSITIVITY;
+		camera.rotate(-mouseDelta.y, mouseDelta.x);
 	}
 
 }

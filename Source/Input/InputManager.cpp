@@ -1,14 +1,14 @@
 #include "Input/InputManager.h"
 #include "Utility/TypeUtils.h"
+#include "Engine.h"
 
 #include <algorithm>
 
 namespace winter {
 
-    InputManager& InputManager::getInstance() {
-        static InputManager instance;
-        return instance;
-    }
+    InputManager::InputManager() :
+        mousePosition(0.0f, 0.0f),
+        lastMousePosition(0.0f, 0.0f) {}
 
 	const glm::vec2& InputManager::getMousePosition() const {
 		return mousePosition;
@@ -65,7 +65,7 @@ namespace winter {
 	}
 
     void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        auto& instance = getInstance();
+        auto& instance = Engine::getInstance().getInputManager();
         switch (action) {
         case GLFW_PRESS:
             instance.keysDown.emplace(key);
@@ -78,7 +78,7 @@ namespace winter {
     }
 
 	void InputManager::mouseCallback(GLFWwindow* window, double x, double y) {
-		auto& instance = getInstance();
+		auto& instance = Engine::getInstance().getInputManager();
 		instance.lastMousePosition = instance.mousePosition;
 		instance.mousePosition.x = static_cast<float>(x);
 		instance.mousePosition.y = static_cast<float>(y);

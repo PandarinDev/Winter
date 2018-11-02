@@ -1,9 +1,10 @@
 #pragma once
 
+#include "External/glad.h"
 #include "Window.h"
 
 #include "glm/vec2.hpp"
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 #include <vector>
 #include <memory>
@@ -37,13 +38,10 @@ namespace winter {
     class InputManager final {
 
     public:
+        
+        InputManager();
 
-        static InputManager& getInstance();
-
-        InputManager(const InputManager&) = delete;
-        InputManager& operator=(const InputManager&) = delete;
-
-		const glm::vec2& getMousePosition() const;
+        const glm::vec2& getMousePosition() const;
 
         void tick();
         void hookInto(const Window& window);
@@ -51,8 +49,6 @@ namespace winter {
 		void registerMouseListener(MouseListenerPtr mouseListener);
 
     private:
-
-        InputManager() = default;
 
 		glm::vec2 mousePosition;
 		glm::vec2 lastMousePosition;
