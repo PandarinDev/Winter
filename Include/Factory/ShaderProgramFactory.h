@@ -27,7 +27,7 @@ namespace winter {
 			"out vec2 fs_UV;\n"
 			"void main() {\n"
 				"fs_UV = in_UV;\n"
-				"gl_Position = u_ProjectionMatrix * vec4(in_Position, 0.0, 1.0);\n"
+				"gl_Position = u_ProjectionMatrix * u_ModelViewMatrix * vec4(in_Position, 0.0, 1.0);\n"
 			"}\n";
 		static constexpr const char* defaultFS_2D = ""
 			"#version 330 core\n"

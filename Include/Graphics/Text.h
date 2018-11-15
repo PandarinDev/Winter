@@ -13,7 +13,7 @@ namespace winter {
 
 		Text(std::unique_ptr<Mesh> mesh, std::shared_ptr<Texture> texture);
 
-		const Mesh& getMesh() const;
+		Mesh& getMesh() const;
 		const Texture& getTexture() const;
 
 	private:

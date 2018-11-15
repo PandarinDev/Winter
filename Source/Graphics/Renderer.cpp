@@ -42,9 +42,9 @@ namespace winter {
 		shader2D->use();
 		text.getTexture().use();
 		projectionMatrixLocation = shader2D->getUniformLocation(PROJECTION_MATRIX_UNIFORM);
-		// modelViewMatrixLocation = shader2D->getUniformLocation(MODELVIEW_MATRIX_UNIFORM);
+		modelViewMatrixLocation = shader2D->getUniformLocation(MODELVIEW_MATRIX_UNIFORM);
 		shader2D->uploadMatrix(projectionMatrixLocation, projectionMatrix2D);
-		// shader2D->uploadMatrix(modelViewMatrixLocation, glm::mat4(1.0f));
+		shader2D->uploadMatrix(modelViewMatrixLocation, text.getMesh().getTransformations());
 		glDrawArrays(GL_TRIANGLES, 0, text.getMesh().getNumberOfIndices());
 		checkForErrors();
 	}

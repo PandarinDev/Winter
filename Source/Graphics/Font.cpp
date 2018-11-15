@@ -14,11 +14,14 @@ namespace winter {
 		static constexpr auto verticesPerCharacter = 24;
 		std::vector<float> vertexBuffer(content.size() * verticesPerCharacter);
 		std::size_t counter = 0;
-		float x = 0.0f, y = 0.0f;
+		float cursorX = 0.0f, cursorY = 0.0f;
 		float textureWidth = texture->getWidth();
 		float textureHeight = texture->getHeight();
+		FontChar::Id lastChar = -1u;
 		for (const auto c : content) {
             auto fontChar = getFontChar(c);
+			float x = cursorX + fontChar.xOffset;
+			float y = cursorY;
 			// Bottom right triangle
 			vertexBuffer[counter++] = x;
 			vertexBuffer[counter++] = y;
@@ -50,7 +53,12 @@ namespace winter {
 			vertexBuffer[counter++] = fontChar.x / textureWidth;
 			vertexBuffer[counter++] = 1.0f - (fontChar.y / textureHeight);
 
-            x += fontChar.xAdvance;
+            cursorX += fontChar.xAdvance;
+			auto kerningIt = kernings.find(std::make_pair(lastChar, fontChar.id));
+			if (kerningIt != kernings.end()) {
+				cursorX += kerningIt->second;
+			}
+			lastChar = fontChar.id;
 		}
 
 		std::vector<VertexAttribute> attributes = {
