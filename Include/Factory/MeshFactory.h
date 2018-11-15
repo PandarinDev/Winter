@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Graphics/Mesh.h"
+#include "Graphics/Geometry.h"
+#include "Graphics/VertexAttribute.h"
 #include "Graphics/OBJ/ObjVertex.h"
 
 #include "glm/vec3.hpp"
@@ -18,6 +20,7 @@ namespace winter {
     public:
 
         static std::unique_ptr<Mesh> loadFile(MeshFormat format, const std::string& filePath);
+		static std::unique_ptr<Mesh> loadGeometry(const Geometry& geometry, const std::vector<VertexAttribute>& attributes);
 
     private:
 

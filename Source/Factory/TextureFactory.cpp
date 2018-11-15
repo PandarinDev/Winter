@@ -9,6 +9,7 @@ namespace winter {
 		GLuint handle;
 		glCreateTextures(GL_TEXTURE_2D, 1, &handle);
 		int width, height, components;
+		stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(filePath.c_str(), &width, &height, &components, 0);
 		if (!data) {
 			throw std::runtime_error("Failed to load texture '" + filePath + "'.");

@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 #include "Factory/ShaderProgramFactory.h"
+#include "Factory/FontFactory.h"
 #include "Scenes/DefaultScene.h"
 
 #include <glm/glm.hpp>
@@ -26,7 +27,9 @@ namespace winter {
         initGLAD();
         renderer = std::make_unique<Renderer>(
             glm::vec3(0.1f, 0.5f, 0.95f),
-		    ShaderProgramFactory::createDefaultProgram(),
+            ShaderProgramFactory::createDefault2DProgram(),
+		    ShaderProgramFactory::createDefault3DProgram(),
+            FontFactory::createFromFile("Assets/Fonts/Roboto/roboto.fnt"),
 		    glm::radians(config.rendererFieldOfView),
 		    config.windowWidth,
             config.windowHeight,
@@ -41,7 +44,7 @@ namespace winter {
             inputManager->tick();
             // Render and swap buffers
             renderer->clearBuffers();
-            this->scene->tick();
+            scene->tick();
             window->swapBuffers();
         }
     }

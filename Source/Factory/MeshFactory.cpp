@@ -61,24 +61,33 @@ namespace winter {
         }
 		// Combine the buffers
 		auto combinedBuffer = combineObjBuffers(vertices, uvs, normals, indices);
-        // Upload data to the GPU
-        GLuint vertexArrayObject, vertexBufferObject;
-        glCreateVertexArrays(1, &vertexArrayObject);
-        glCreateBuffers(1, &vertexBufferObject);
-		glNamedBufferData(vertexBufferObject, combinedBuffer.size() * sizeof(float), combinedBuffer.data(), GL_STATIC_DRAW);
-		glVertexArrayVertexBuffer(vertexArrayObject, 0, vertexBufferObject, 0, 8 * sizeof(float));
+        std::vector<VertexAttribute> attributes = {
+                { 0, 3 }, // Geometry
+                { 1, 2 }, // Texture coordinates
+                { 2, 3 }  // Normals
+        };
+        return loadGeometry(combinedBuffer, attributes);
+    }
+
+    std::unique_ptr<Mesh> MeshFactory::loadGeometry(const winter::Geometry& geometry, const std::vector<VertexAttribute>& attributes) {
+		GLuint vertexArrayObject, vertexBufferObject;
+		glCreateVertexArrays(1, &vertexArrayObject);
+		glCreateBuffers(1, &vertexBufferObject);
+		glNamedBufferData(vertexBufferObject, geometry.size() * sizeof(float), geometry.data(), GL_STATIC_DRAW);
+		unsigned totalStride = 0;
+		for (const auto& attribute : attributes) totalStride += attribute.components * sizeof(float);
+		glVertexArrayVertexBuffer(vertexArrayObject, 0, vertexBufferObject, 0, totalStride);
 		// Enable and describe vertex array attributes
-        glEnableVertexArrayAttrib(vertexArrayObject, 0);
-		glEnableVertexArrayAttrib(vertexArrayObject, 1);
-		glEnableVertexArrayAttrib(vertexArrayObject, 2);
-        glVertexArrayAttribFormat(vertexArrayObject, 0, 3, GL_FLOAT, GL_FALSE, 0);
-		glVertexArrayAttribFormat(vertexArrayObject, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
-		glVertexArrayAttribFormat(vertexArrayObject, 2, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float));
-        glVertexArrayAttribBinding(vertexArrayObject, 0, 0);
-		glVertexArrayAttribBinding(vertexArrayObject, 1, 0);
-		glVertexArrayAttribBinding(vertexArrayObject, 2, 0);
-        // Create the mesh
-        return std::make_unique<Mesh>(vertexArrayObject, vertexBufferObject, indices.size());
+		unsigned stride = 0;
+		unsigned vertexPerIndex = 0;
+		for (const auto& attribute : attributes) {
+		    glEnableVertexArrayAttrib(vertexArrayObject, attribute.index);
+		    glVertexArrayAttribFormat(vertexArrayObject, attribute.index, attribute.components, GL_FLOAT, GL_FALSE, stride);
+		    glVertexArrayAttribBinding(vertexArrayObject, attribute.index, 0);
+		    stride += attribute.components * sizeof(float);
+		    vertexPerIndex += attribute.components;
+		}
+		return std::make_unique<Mesh>(vertexArrayObject, vertexBufferObject, geometry.size() / vertexPerIndex);
     }
 
 	ObjVertex MeshFactory::extractObjFace(const std::string& face) {

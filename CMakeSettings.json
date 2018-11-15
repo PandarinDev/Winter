@@ -15,7 +15,7 @@
       "variables": [
         {
           "name": "GLFW3_ROOT",
-          "value": "C:/Program Files/GLFW"
+          "value": "C:/Utils/Libraries/GLFW"
         },
         {
           "name": "glm_DIR",

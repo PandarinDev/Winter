@@ -13,6 +13,8 @@ namespace winter {
 		Texture(const Texture&) = delete;
 		Texture& operator=(const Texture&) = delete;
 
+		void use() const;
+
 		GLuint getHandle() const;
 		int getWidth() const;
 		int getHeight() const;
