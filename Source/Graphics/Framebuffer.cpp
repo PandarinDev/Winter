@@ -12,6 +12,10 @@ namespace winter {
 		glDeleteFramebuffers(1, &handle);
 	}
 
+	const Texture& Framebuffer::getTexture(FramebufferTexture type) const {
+		return *textures.at(static_cast<FramebufferTextureType>(type));
+	}
+
 	GLuint Framebuffer::getHandle() const {
 		return handle;
 	}

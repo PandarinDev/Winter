@@ -35,6 +35,8 @@ namespace winter {
 		Framebuffer(const Framebuffer&) = delete;
 		Framebuffer& operator=(const Framebuffer&) = delete;
 
+		const Texture& getTexture(FramebufferTexture type) const;
+
 		GLuint getHandle() const;
 
 	private:

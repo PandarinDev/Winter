@@ -20,6 +20,7 @@ namespace winter {
 
         Renderer& renderer;
         std::unique_ptr<Mesh> dragonPtr;
+        std::shared_ptr<Text> textPtr;
 
     };
 

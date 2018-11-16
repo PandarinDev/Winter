@@ -9,8 +9,8 @@ namespace winter {
 		glDeleteTextures(1, &handle);
 	}
 
-	void Texture::use() const {
-		glBindTexture(GL_TEXTURE_2D, handle);
+	void Texture::use(GLuint unit) const {
+		glBindTextureUnit(unit, handle);
 	}
 
 	GLuint Texture::getHandle() const {

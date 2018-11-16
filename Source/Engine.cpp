@@ -2,6 +2,8 @@
 
 #include "Factory/ShaderProgramFactory.h"
 #include "Factory/FontFactory.h"
+#include "Factory/TextureFactory.h"
+#include "Factory/FramebufferFactory.h"
 #include "Scenes/DefaultScene.h"
 
 #include <glm/glm.hpp>
@@ -29,7 +31,10 @@ namespace winter {
             glm::vec3(0.1f, 0.5f, 0.95f),
             ShaderProgramFactory::createDefault2DProgram(),
 		    ShaderProgramFactory::createDefault3DProgram(),
+            ShaderProgramFactory::createDefaultGBufferProgram(),
             FontFactory::createFromFile("Assets/Fonts/Roboto/roboto.fnt"),
+            FramebufferFactory::createGBuffer(config.windowWidth, config.windowHeight),
+            TextureFactory::createFromFile("Assets/Textures/Default.png"),
 		    glm::radians(config.rendererFieldOfView),
 		    config.windowWidth,
             config.windowHeight,
@@ -43,8 +48,9 @@ namespace winter {
             window->pollEvents();
             inputManager->tick();
             // Render and swap buffers
-            renderer->clearBuffers();
+            renderer->beginFrame();
             scene->tick();
+            renderer->endFrame();
             window->swapBuffers();
         }
     }
