@@ -2,6 +2,7 @@
 #include "Graphics/Quad.h"
 #include "Utility/OGLUtils.h"
 #include "External/glad.h"
+#include "Factory/MeshFactory.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -36,6 +37,7 @@ namespace winter {
 		this->shaderGBuffer = std::move(shaderGBuffer);
 		setFont(std::move(font));
 		gBufferQuad = Quad::createMesh(perspectiveWidth, perspectiveHeight);
+		lightSphere = MeshFactory::loadFile(MeshFormat::OBJ, "Assets/Meshes/Sphere.obj");
 	}
 
 	void Renderer::beginFrame() {
@@ -85,12 +87,18 @@ namespace winter {
 		glBindVertexArray(mesh.getVertexArrayObject());
 		shader3D->use();
 		defaultTexture->use(0);
-		projectionMatrixLocation = shader3D->getUniformLocation(PROJECTION_MATRIX_UNIFORM);
-		modelViewMatrixLocation = shader3D->getUniformLocation(MODELVIEW_MATRIX_UNIFORM);
+		auto projectionMatrixLocation = shader3D->getUniformLocation("u_ProjectionMatrix");
+		auto modelMatrixLocation = shader3D->getUniformLocation("u_ModelMatrix");
+		auto viewMatrixLocation = shader3D->getUniformLocation("u_ViewMatrix");
 		shader3D->uploadMatrix(projectionMatrixLocation, projectionMatrix3D);
-		shader3D->uploadMatrix(modelViewMatrixLocation, camera.calculateTransformationMatrix());
+		shader3D->uploadMatrix(modelMatrixLocation, mesh.getTransformations());
+		shader3D->uploadMatrix(viewMatrixLocation, camera.calculateTransformationMatrix());
 		glDrawArrays(GL_TRIANGLES, 0, mesh.getNumberOfIndices());
 		checkForErrors();
+	}
+
+	void Renderer::addPointLight(std::unique_ptr<PointLight> pointLight) {
+		pointLights.emplace_back(std::move(pointLight));
 	}
 
 	Camera& Renderer::getCamera() {
@@ -107,6 +115,10 @@ namespace winter {
 
 	const Font& Renderer::getFont() const {
 		return *font;
+	}
+
+	const std::vector<std::unique_ptr<PointLight>>& Renderer::getPointLights() const {
+		return pointLights;
 	}
 
 	void Renderer::setClearColor(const glm::vec3& clearColor) {

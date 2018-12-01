@@ -8,7 +8,11 @@ namespace winter {
 
     InputManager::InputManager() :
         mousePosition(0.0f, 0.0f),
-        lastMousePosition(0.0f, 0.0f) {}
+        lastMousePosition(0.0f, 0.0f),
+        mouseCoordinated(false) {
+        glfwSetJoystickCallback(joystickCallback);
+        discoverJoysticks();
+    }
 
 	const glm::vec2& InputManager::getMousePosition() const {
 		return mousePosition;
@@ -41,6 +45,11 @@ namespace winter {
 			listener->handleMouseEvent(mousePosition, lastMousePosition);
 		}
 		lastMousePosition = mousePosition;
+
+        // Handle joystick events
+        for (const auto& joystickEntry : joysticks) {
+            
+        }
     }
 
     void InputManager::hookInto(const Window& window) {
@@ -48,7 +57,7 @@ namespace winter {
 		window.setMouseCallback(mouseCallback);
     }
 
-    void InputManager::registerEventListener(KeyEvent event, KeyEventListenerPtr eventListener) {
+    void InputManager::registerKeyEventListener(KeyEvent event, std::unique_ptr<KeyEventListener> eventListener) {
         auto eventValue = TypeUtils::enumValue(event);
         auto it = eventListeners.find(eventValue);
         if (it == eventListeners.end()) {
@@ -60,9 +69,22 @@ namespace winter {
         it->second.emplace_back(std::move(eventListener));
     }
 
-	void InputManager::registerMouseListener(MouseListenerPtr mouseListener) {
-		mouseListeners.emplace_back(std::move(mouseListener));
+	void InputManager::registerMouseEventListener(std::unique_ptr<MouseEventListener> eventListener) {
+		mouseListeners.emplace_back(std::move(eventListener));
 	}
+
+    void InputManager::registerJoystickEventListener(std::unique_ptr<JoystickEventListener> eventListener) {
+        joystickListeners.emplace_back(std::move(eventListener));
+    }
+
+    void InputManager::discoverJoysticks() {
+        joysticks.clear();
+        for (int id = GLFW_JOYSTICK_1; id <= GLFW_JOYSTICK_LAST; ++id) {
+            if (glfwJoystickPresent(id)) {
+                joysticks.emplace(id, std::make_unique<Joystick>(id, glfwGetJoystickName(id)));
+            }
+        }
+    }
 
     void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         auto& instance = Engine::getInstance().getInputManager();
@@ -79,9 +101,18 @@ namespace winter {
 
 	void InputManager::mouseCallback(GLFWwindow* window, double x, double y) {
 		auto& instance = Engine::getInstance().getInputManager();
+        if (!instance.mouseCoordinated) {
+            instance.mousePosition = glm::vec2(static_cast<float>(x), static_cast<float>(y));
+            instance.mouseCoordinated = true;
+        }
 		instance.lastMousePosition = instance.mousePosition;
 		instance.mousePosition.x = static_cast<float>(x);
 		instance.mousePosition.y = static_cast<float>(y);
 	}
+
+    void InputManager::joystickCallback(int joy, int event) {
+        auto& instance = Engine::getInstance().getInputManager();
+        instance.discoverJoysticks();
+    }
 
 }

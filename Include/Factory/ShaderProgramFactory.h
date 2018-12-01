@@ -44,7 +44,8 @@ namespace winter {
 		static constexpr const char* defaultVS_3D = ""
 			"#version 330 core\n"
 			"uniform mat4 u_ProjectionMatrix;\n"
-			"uniform mat4 u_ModelViewMatrix;\n"
+			"uniform mat4 u_ModelMatrix;\n"
+			"uniform mat4 u_ViewMatrix;\n"
 			"layout (location = 0) in vec3 in_Position;\n"
 			"layout (location = 1) in vec2 in_UV;\n"
 			"layout (location = 2) in vec3 in_Normal;\n"
@@ -52,10 +53,10 @@ namespace winter {
 			"out vec2 fs_UV;\n"
 			"out vec4 fs_Normal;\n"
 			"void main() {\n"
-			"fs_Position = u_ModelViewMatrix * vec4(in_Position, 1.0);\n"
+			"fs_Position = u_ModelMatrix * vec4(in_Position, 1.0);\n"
 			"fs_UV = in_UV;\n"
-			"fs_Normal = u_ModelViewMatrix * vec4(in_Normal, 1.0);\n"
-			"gl_Position = u_ProjectionMatrix * u_ModelViewMatrix * vec4(in_Position, 1.0);\n"
+			"fs_Normal = u_ModelMatrix * vec4(in_Normal, 1.0);\n"
+			"gl_Position = u_ProjectionMatrix * u_ModelMatrix * u_ViewMatrix * vec4(in_Position, 1.0);\n"
 			"}\n";
 		static constexpr const char* defaultFS_3D = ""
 			"#version 330 core\n"
@@ -92,9 +93,9 @@ namespace winter {
 			"layout (location = 0) out vec4 out_Color;\n"
 			"void main() {\n"
 			"vec3 position = texture(u_TexPosition, fs_UV).xyz;\n"
-			"vec3 normal = texture(u_TexNormal, fs_UV).xyz;\n"
+			"vec4 normal = texture(u_TexNormal, fs_UV);\n"
 			"vec4 diffuse = texture(u_Diffuse, fs_UV);\n"
-			"out_Color = diffuse * 0.3;\n"
+			"out_Color = normal * 1.0;\n"
 			"}\n";
 
 	};

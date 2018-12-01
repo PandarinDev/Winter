@@ -6,6 +6,7 @@
 #include "Graphics/Font.h"
 #include "Graphics/Framebuffer.h"
 #include "Graphics/Texture.h"
+#include "Graphics/Lights/PointLight.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -39,10 +40,13 @@ namespace winter {
 		void render(const std::shared_ptr<Text>& text);
 		void render(const Mesh& mesh);
 
+		void addPointLight(std::unique_ptr<PointLight> pointLight);
+
 		Camera& getCamera();
 		const ShaderProgram& getShaderProgram2D() const;
 		const ShaderProgram& getShaderProgram3D() const;
 		const Font& getFont() const;
+		const std::vector<std::unique_ptr<PointLight>>& getPointLights() const;
 
 		void setClearColor(const glm::vec3& clearColor);
 		void setShaderProgram2D(std::unique_ptr<ShaderProgram> shader);
@@ -66,9 +70,11 @@ namespace winter {
 		std::unique_ptr<Framebuffer> gBuffer;
 		std::unique_ptr<Texture> defaultTexture;
 		std::unique_ptr<Mesh> gBufferQuad;
+		std::unique_ptr<Mesh> lightSphere;
 		GLint projectionMatrixLocation;
 		GLint modelViewMatrixLocation;
 		std::vector<std::shared_ptr<Text>> textBuffer;
+		std::vector<std::unique_ptr<PointLight>> pointLights;
 
 		void configureDefaults() const;
 		void checkForErrors() const;

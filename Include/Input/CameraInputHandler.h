@@ -21,7 +21,7 @@ namespace winter {
 
 	};
 
-	class CameraMouseInputHandler final : public MouseListener {
+	class CameraMouseInputHandler final : public MouseEventListener {
 
 	public:
 
